@@ -1,0 +1,6 @@
+@PosAndMore.API_HostAddress = http://localhost:5142
+
+GET {{PosAndMore.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
