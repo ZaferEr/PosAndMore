@@ -19,6 +19,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.IdentityModel.Tokens;
+using PosAndMore.SuperAdminUI.Services;
 using RepoDb;
 using Scalar.AspNetCore;
 using System.Reflection.Metadata.Ecma335;
@@ -40,7 +41,7 @@ builder.Services.AddAuthentication(x =>
 .AddJwtBearer(x =>
 {
     var jwt = builder.Configuration.GetSection("Jwt");
-    var key = Encoding.UTF8.GetBytes(jwt["Key"]!);
+    var key = Encoding.UTF8.GetBytes(jwt["SecretKey"]!);
 
     x.RequireHttpsMetadata = false; // prod'da true yap
     x.SaveToken = true;
@@ -58,7 +59,7 @@ builder.Services.AddAuthentication(x =>
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
- 
+
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer((doc, context, cancellationToken) =>
@@ -78,7 +79,7 @@ builder.Services.AddOpenApi(options =>
 
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
-
+builder.Services.AddScoped<JwtService>();
 
 var app = builder.Build();
 

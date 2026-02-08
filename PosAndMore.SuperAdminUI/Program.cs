@@ -1,29 +1,82 @@
-﻿
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using PosAndMore.SuperAdminUI;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
 builder.Services.AddHttpClient("RestoranApi", client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]);   
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]);
 });
+
 builder.Services.AddScoped<ApiService>();
 
-builder.Services.AddAuthentication("CookieAuth")  // İstersen CookieAuthenticationDefaults.AuthenticationScheme kullan
-    .AddCookie("CookieAuth", options =>
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+});
+
+// JWT Bearer Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-        options.LoginPath = "/Login";          // ← Buraya yönlendirecek (senin login Razor Page'in)
-        options.AccessDeniedPath = "/AccessDenied";  // Opsiyonel: yetki yokken buraya
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(60);   // Cookie süresi
-        options.SlidingExpiration = true;                    // Kullanım devam ederse uzat
-        options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // HTTPS zorunlu
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"])
+            ),
+            ClockSkew = TimeSpan.Zero
+        };
+
+        // Tarayıcıdan gelen isteklerde cookie'dan token oku
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var token = context.Request.Cookies["jwt"];
+                if (!string.IsNullOrEmpty(token) && string.IsNullOrEmpty(context.Token))
+                {
+                    context.Token = token;
+                }
+                return Task.CompletedTask;
+            },
+            // 401'de login'e yönlendirme için (middleware içinde)
+            OnChallenge = context =>
+            {
+                context.HandleResponse();
+                context.Response.Redirect("/index?returnUrl=" + Uri.EscapeDataString(context.Request.Path + context.Request.QueryString));
+                return Task.CompletedTask;
+            }
+        };
     });
 
-// Authorization ekle (policy vs. istersen buraya ekleyebilirsin)
 builder.Services.AddAuthorization();
+
+builder.Services.AddRazorPages(options =>
+{
+    // Tüm Admin area’sı → authenticated olmak zorunlu
+    options.Conventions.AuthorizeAreaFolder("Admin", "/");
+
+    // Eğer policy ile role vs. kontrolü istiyorsan
+    // options.Conventions.AuthorizeAreaFolder("Admin", "/", "RequireAdminRole");
+
+    options.Conventions.AllowAnonymousToPage("/Login");
+    options.Conventions.AllowAnonymousToPage("/Index");
+});
 
 var app = builder.Build();
 
@@ -31,19 +84,18 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();  // Static dosyalar için (CSS, JS vs.)
-
+app.UseStaticFiles();
 app.UseRouting();
 
-// Authentication ve Authorization middleware'leri – SIRASI ÖNEMLİ!
-app.UseAuthentication();     // ← Authentication önce!
-app.UseAuthorization();      // ← Unauthorized → LoginPath'e redirect eder
+app.UseSession();
+app.UseAuthentication();
+app.UseAuthorization();
 
+// UseStatusCodePages'i kaldırıyoruz – OnChallenge event'i daha doğrudan çalışıyor
 app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
