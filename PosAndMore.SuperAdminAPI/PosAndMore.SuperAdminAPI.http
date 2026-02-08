@@ -1,0 +1,6 @@
+@PosAndMore.SuperAdminAPI_HostAddress = http://localhost:5015
+
+GET {{PosAndMore.SuperAdminAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -8,10 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.66" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Dapper.SimpleSaveCore\Dapper.SimpleSaveCore.csproj" />
+    <PackageReference Include="RepoDb.SqlServer" Version="1.13.1" />
   </ItemGroup>
 
  
