@@ -1,37 +1,19 @@
-﻿//var builder = WebApplication.CreateBuilder(args);
+﻿
 
-//// Add services to the container.
-
-//builder.Services.AddControllers();
-
-//var app = builder.Build();
-
-//// Configure the HTTP request pipeline.
-
-//app.UseHttpsRedirection();
-
-//app.UseAuthorization();
-
-//app.MapControllers();
-
-//app.Run();
-
+using LinqToDB.DataProvider;
+using LinqToDB.DataProvider.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.OpenApi;
 using Microsoft.IdentityModel.Tokens;
+using PosAndMore.SuperAdmin.Models;
 using PosAndMore.SuperAdminUI.Services;
-using RepoDb;
 using Scalar.AspNetCore;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 
- 
+
 var builder = WebApplication.CreateBuilder(args);
 
-GlobalConfiguration
-   .Setup()
-   .UseSqlServer();
+ 
 
 builder.Services.AddAuthentication(x =>
 {
@@ -77,10 +59,13 @@ builder.Services.AddOpenApi(options =>
     });
 });
 
-
+    
+ 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddScoped<JwtService>();
-
+builder.Services.AddAutoMapper(cfg => { },
+    typeof(MappingProfile)
+);
 var app = builder.Build();
 
  

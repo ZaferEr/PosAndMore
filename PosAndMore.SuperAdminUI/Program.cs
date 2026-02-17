@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using PosAndMore.SuperAdmin.Models;
 using PosAndMore.SuperAdminUI;
 using System.Text;
 
@@ -76,8 +78,11 @@ builder.Services.AddRazorPages(options =>
 
     options.Conventions.AllowAnonymousToPage("/Login");
     options.Conventions.AllowAnonymousToPage("/Index");
-});
+}).AddRazorRuntimeCompilation();
 
+builder.Services.AddAutoMapper(cfg => { },
+    typeof(MappingProfile) 
+);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

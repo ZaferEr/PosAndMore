@@ -2,12 +2,11 @@
 {
     using Microsoft.Data.SqlClient;
  
-    using Dapper.SimpleLoadCore;
-    using Dapper.SimpleSaveCore;
+
     using PosAndMore.Models;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Data.SqlClient;
-    using Dapper;
+
+
 
     //public void getdata()
     //{
@@ -30,22 +29,23 @@
                     ?? "Server=89.144.20.242;Database=EuroDigiPos;User Id=sa;Password=mb88421;TrustServerCertificate=True;";
         }
 
-            [HttpGet]
-            public async Task<IActionResult> GetAll()
-            {
-                using var connection = new SqlConnection(_connectionString);
-                connection.Open();
-                var kdvs =   connection.AutoQuery<Kdv>(null);
-                return Ok(kdvs);
-            }
+            //[HttpGet]
+            //public async Task<IActionResult> GetAll()
+            //{
+            ////using var connection = new SqlConnection(_connectionString);
+            ////connection.Open();
+            ////var kdvs =   connection.AutoQuery<Kdv>(null);
+            ////return Ok(kdvs);
+            //return null;
+            //}
 
-            [HttpGet("{id}")]
-            public async Task<IActionResult> GetById(int id)
-            {
-                await using var connection = new SqlConnection(_connectionString);
-                var kdv = await connection.QueryFirstOrDefaultAsync<Kdv>("SELECT * FROM Kdv WHERE KdvId = @Id", new { Id = id });
-                return kdv == null ? NotFound() : Ok(kdv);
-            }
+            //[HttpGet("{id}")]
+            //public async Task<IActionResult> GetById(int id)
+            //{
+            //    //await using var connection = new SqlConnection(_connectionString);
+            //    //var kdv = await connection.QueryFirstOrDefaultAsync<Kdv>("SELECT * FROM Kdv WHERE KdvId = @Id", new { Id = id });
+            //    //return kdv == null ? NotFound() : Ok(kdv);
+            //}
 
             // İstersen Post, Put, Delete de ekle...
         }

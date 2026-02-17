@@ -5,13 +5,13 @@ using PosAndMore.SuperAdmin.Models;
 
 namespace PosAndMore.SuperAdminUI.Pages
 {
-    public class Index : PageModel
+    public class IndexModel : PageModel
     {
         private readonly ApiService _apiService;
         public string? ReturnUrl { get; set; }
 
        
-        public Index(ApiService apiService)
+        public IndexModel(ApiService apiService)
         {
             _apiService = apiService;
         }

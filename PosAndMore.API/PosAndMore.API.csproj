@@ -11,8 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Dapper.SimpleLoadCore\Dapper.SimpleLoadCore.csproj" /> 
-	  <ProjectReference Include="..\Dapper.SimpleSaveCore\Dapper.SimpleSaveCore.csproj" />
     <ProjectReference Include="..\PosAndMore.Models\PosAndMore.Models.csproj" />
   </ItemGroup>
 

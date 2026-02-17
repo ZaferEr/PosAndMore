@@ -6,11 +6,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.1.66" />
-    <PackageReference Include="RepoDb.SqlServer" Version="1.13.1" />
-  </ItemGroup>
-
  
 
 </Project>

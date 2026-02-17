@@ -1,11 +1,13 @@
-﻿using RepoDb;
+﻿using LinqToDB;
+using LinqToDB.Mapping;
 
 namespace PosAndMore.SuperAdmin.Models
 {
    
     public class AppUser
     {
- 
+
+        [PrimaryKey]
         public int Id { get; set; }
 
         public string Username { get; set; } = string.Empty;

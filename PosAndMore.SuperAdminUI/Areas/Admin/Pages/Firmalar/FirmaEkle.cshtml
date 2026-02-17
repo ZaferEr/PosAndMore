@@ -1,0 +1,166 @@
+﻿@page
+@model Firmalar.FirmaEkleModel
+@{
+
+}
+<partial name="~/Areas/Admin/Shared/_TopBarLayout.cshtml" />
+<partial name="~/Areas/Admin/Shared/_MenuLayout.cshtml" />
+<div class="container-fluid">
+    <div class="card card-info card-outline mb-4">
+        <!--begin::Header-->
+        <div class="card-header">
+            <div class="card-title">Form Validation</div>
+        </div>
+        <!--end::Header-->
+        <!--begin::Form-->
+        <form class="needs-validation was-validated"  method="post" >
+            <!--begin::Body-->
+            <div class="card-body">
+                <!--begin::Row-->
+                <div class="row g-3">
+                    <!--begin::Col-->
+                    <div class="col-md-12">
+                        <label for="FirmaAdi" class="form-label">Firma Adı<span class="required-indicator sr-only"> (required)</span></label>
+                        <input type="text" class="form-control" asp-for="FirmaDtoModel.FirmaAdi" id="FirmaAdi" value="@Model.FirmaDtoModel.FirmaAdi" required="">
+
+                    </div>
+                    <!--end::Col-->
+                    <!--begin::Col-->
+                    <div class="col-md-12">
+                        <label for="FirmaAdres" class="form-label">Firma Adresi<span class="required-indicator sr-only"></span></label>
+                        <input type="text" class="form-control" asp-for="FirmaDtoModel.FirmaAdres" value="@Model.FirmaDtoModel.FirmaAdres">
+
+                    </div>
+                    <!--end::Col-->
+                    <!--begin::Col-->
+                    <div class="col-md-6">
+                        <label for="FirmaIl" class="form-label">Firma İl<span class="required-indicator sr-only"</span></label>
+                        <div class="input-group has-validation">
+
+                            <select asp-for="FirmaDtoModel.IlId"
+                                    asp-items="Model.Iller"
+                                    class="form-control"
+                                    hx-get="@Url.Page(null, "Ilceler")"
+                                    hx-target="#ilceSelect"
+                                    hx-swap="innerHTML"
+                                    hx-trigger="change"
+                                    hx-indicator="#ilce-loading"
+                                    hx-on:change="document.getElementById('FirmaIlAdiHidden').value = this.options[this.selectedIndex].text.trim()">
+                                required>
+                                <option value="0">-- İl Seçiniz --</option>
+                            </select>
+
+                        </div>
+                        <input type="hidden" asp-for="FirmaDtoModel.FirmaSehir" id="FirmaIlAdiHidden" />
+                    </div>
+                    <!--end::Col-->
+                    <!--begin::Col-->
+                    <div class="col-md-6">
+                        <label for="FirmaIlce" class="form-label">Firma İlçe</label>
+                        <!-- HTMX loading göstergesi -->
+                        <div class="form-group">
+                            <select asp-for="FirmaDtoModel.IlceId"
+                                    id="ilceSelect"
+                                    class="form-control"
+                                    required
+                                    hx-on:change="document.getElementById('FirmaIlceAdiHidden').value = this.options[this.selectedIndex].text.trim()">
+                                >
+                                <option value="">-- Önce İl Seçiniz --</option>
+                            </select>
+
+                            <!-- HTMX loading göstergesi -->
+                            <div id="ilce-loading" class="htmx-indicator mt-1" style="display:none;">
+                                <small class="text-muted">İlçeler yükleniyor...</small>
+                            </div>
+                        </div>
+                        <input type="hidden" asp-for="FirmaDtoModel.FirmaIlce" id="FirmaIlceAdiHidden" />
+                    </div>
+                    <!--end::Col-->
+                    <!--begin::Col-->
+                    <div class="col-md-6">
+                        <label for="vd" class="form-label">Vergi Daires</label>
+                        <input type="text" class="form-control" asp-for="FirmaDtoModel.FirmaVd" id="FirmaVd" value="@Model.FirmaDtoModel.FirmaVd">
+                    </div>
+                    <!--end::Col-->
+                    <!--begin::Col-->
+                    <div class="col-md-6">
+                        <label for="vd" class="form-label">Vergi NO</label>
+                        <input type="text" class="form-control" asp-for="FirmaDtoModel.FirmaVNo" id="FirmaVNo" value="@Model.FirmaDtoModel.FirmaVNo">
+                    </div>
+                    <!--end::Col-->
+                    <!--begin::Col-->
+                    <div class="col-md-6">
+                        <label for="FirmaAdmin" class="form-label">Vergi Daires</label>
+                        <input type="text" class="form-control" asp-for="FirmaDtoModel.FirmaAdmin" id="FirmaVd" value="@Model.FirmaDtoModel.FirmaAdmin">
+                    </div>
+                    <!--end::Col-->
+                    <!--begin::Col-->
+                    <div class="col-md-6">
+                        <label for="FirmaAdminPass" class="form-label">Vergi NO</label>
+                        <input type="text" class="form-control" asp-for="FirmaDtoModel.AdminPass" id="FirmaAdminPass" value="@Model.FirmaDtoModel.AdminPass">
+                    </div>
+                    <!--end::Col-->
+                    <!--begin::Col-->
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input is-invalid" type="checkbox" asp-for="FirmaDtoModel.TekSube" value="@Model.FirmaDtoModel.TekSube"
+                                   id="TekSube" required="" aria-describedby="invalidCheck-error">
+                            <label class="form-check-label" for="TekSube">
+                                Tek Şube
+                                <span class="required-indicator sr-only"> (required)</span>
+                            </label>
+
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="FirmaYetkili" class="form-label">Firma Yetkili<span class="required-indicator sr-only"></span></label>
+                        <input type="text" class="form-control" id="FirmaYetkili" asp-for="FirmaDtoModel.FirmaYetkili" value="@Model.FirmaDtoModel.FirmaYetkili">
+
+                    </div>
+                    <!--end::Col-->
+                </div>
+                <!--end::Row-->
+            </div>
+            <!--end::Body-->
+            <!--begin::Footer-->
+            <div class="card-footer">
+                <button class="btn btn-info" type="submit">Submit form</button>
+            </div>
+            <!--end::Footer-->
+        </form>
+        <!--end::Form-->
+        <!--begin::JavaScript-->
+        <script>
+            // Example starter JavaScript for disabling form submissions if there are invalid fields
+            (() => {
+                'use strict';
+
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                const forms = document.querySelectorAll('.needs-validation');
+
+                // Loop over them and prevent submission
+                Array.from(forms).forEach((form) => {
+                    form.addEventListener(
+                        'submit',
+                        (event) => {
+                            if (!form.checkValidity()) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }
+
+                            form.classList.add('was-validated');
+                        },
+                        false,
+                    );
+                });
+            })();
+        </script>
+        <!--end::JavaScript-->
+    </div>
+
+</div>
+@section Scripts{
+
+    <script src="https://unpkg.com/htmx.org@2.0.3"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+}

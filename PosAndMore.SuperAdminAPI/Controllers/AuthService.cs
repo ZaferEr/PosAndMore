@@ -1,15 +1,11 @@
-﻿using Azure.Core; // gerek yok gibi görünüyor, kaldırılabilir
-using Dapper;
+﻿
+using LinqToDB;
+using LinqToDB.Async;
+using LinqToDB.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.IdentityModel.Tokens;
+ 
 using PosAndMore.SuperAdmin.Models;
 using PosAndMore.SuperAdminUI.Services;
-using RepoDb;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-
 namespace PosAndMore.SuperAdminAPI.Controllers
 {
     [ApiController]
@@ -32,11 +28,24 @@ namespace PosAndMore.SuperAdminAPI.Controllers
         [HttpPost("login")]
         public async Task<ApiResponse<LoginResponse>> Login([FromBody] LoginDto dto)
         {
-            using var c = new SqlConnection(_connectionString);
+            DataConnection db;
+            try
+            {
+                  db = new DataConnection(
+                new DataOptions()
+                  .UseSqlServer(_connectionString));
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+         
+
             try
             {
                 // Kullanıcıyı username ile bul
-                var users = await c.QueryAsync<AppUser>(u => u.Username == dto.Username);
+                var users = await db.GetTable<AppUser>().Where(u => u.Username == dto.Username).ToListAsync();
                 var user = users?.FirstOrDefault();
 
                 if (user == null)

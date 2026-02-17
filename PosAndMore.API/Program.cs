@@ -1,6 +1,6 @@
 ﻿using PosAndMore.API;
 using Microsoft.Data.SqlClient;
-using Dapper;
+ 
 using PosAndMore.Models;  // Kdv sınıfın burada olsun
 
 var connectionString = "Server=89.144.20.242;Database=EuroDigiPos;User Id=sa;Password=mb88421;TrustServerCertificate=True;";
